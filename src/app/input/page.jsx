@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
+  FieldError,
   FieldLabel,
-  FieldMessage,
   Form,
   FormDescription,
   FormMessage,
@@ -44,6 +44,7 @@ export default function LoginForm() {
     <main className="flex items-center justify-center min-h-screen">
       <Card className="w-full max-w-sm">
         <Form
+          name="login"
           action={formAction}
           state={states}
           dispatch={dispatch}
@@ -63,7 +64,7 @@ export default function LoginForm() {
               <Field name="email" className="grid gap-2">
                 <FieldLabel>Email</FieldLabel>
                 <Input placeholder="example@email.com" />
-                <FieldMessage />
+                <FieldError />
               </Field>
 
               <Field name="password" className="grid gap-2">
@@ -92,7 +93,7 @@ export default function LoginForm() {
                     {visible ? <EyeOff size={18} /> : <Eye size={18} />}
                   </Button>
                 </div>
-                <FieldMessage />
+                <FieldError />
               </Field>
             </div>
           </CardContent>

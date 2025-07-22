@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/card";
 import {
   Field,
+  FieldError,
   FieldLabel,
-  FieldMessage,
   Form,
   FormDescription,
   FormMessage,
@@ -42,7 +42,12 @@ export default function LoginForm() {
   return (
     <main className="flex items-center justify-center min-h-screen">
       <Card className="w-full max-w-sm">
-        <Form action={formAction} state={states} dispatch={dispatch}>
+        <Form
+          name="country-select"
+          action={formAction}
+          state={states}
+          dispatch={dispatch}
+        >
           <CardHeader>
             <FormTitle>Select your country</FormTitle>
             <FormDescription>
@@ -53,7 +58,7 @@ export default function LoginForm() {
             <div className="flex flex-col gap-6">
               <Field name="country" validation={countrySchema}>
                 <FieldLabel>Country</FieldLabel>
-                <Select>
+                <Select defaultValue="ca">
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your country" />
                   </SelectTrigger>
@@ -69,7 +74,7 @@ export default function LoginForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldMessage />
+                <FieldError />
               </Field>
             </div>
           </CardContent>

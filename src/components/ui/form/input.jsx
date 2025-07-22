@@ -14,18 +14,17 @@ function Input({
   ...props
 }) {
   const {
-    name,
+    name: fieldName,
     error,
-    fieldId,
-    fieldDescriptionId,
-    fieldMessageId,
     validateField,
     clearFieldError,
   } = useFieldContext();
-  const { success, formId } = useFormContext();
+  const { name: formName, success } = useFormContext();
 
-  const STORAGE_KEY = `draft-${formId}-${name}-${fieldId}`; // userid can be added if needed
-  const [value, setValue] = React.useState(defaultValue || "");
+  const STORAGE_KEY = `draft-${formName}-${fieldName}`; // userid can be added if needed
+
+  const initialValue = defaultValue || "";
+  const [value, setValue] = React.useState(initialValue);
 
   React.useEffect(() => {
     if (success) return;
@@ -34,16 +33,16 @@ function Input({
       if (!stored) return;
       setValue(stored);
     });
-  }, [STORAGE_KEY, success]);
+  }, []);
 
   React.useEffect(() => {
     if (success) {
       React.startTransition(async () => {
         await clearLocal(STORAGE_KEY);
-        setValue("");
+        setValue(initialValue);
       });
     }
-  }, [success, STORAGE_KEY]);
+  }, [success]);
 
   const handleChange = async (e) => {
     const newValue = e.target.value;
@@ -54,8 +53,8 @@ function Input({
 
   return (
     <input
-      id={fieldId}
-      name={name}
+      id={`${formName}-${fieldName}`}
+      name={fieldName}
       type={type}
       data-slot="input"
       value={value}
@@ -69,8 +68,8 @@ function Input({
       )}
       aria-describedby={
         !error
-          ? `${fieldDescriptionId}`
-          : `${fieldDescriptionId} ${fieldMessageId}`
+          ? `${fieldName}-description`
+          : `${fieldName}-description ${fieldName}-error`
       }
       aria-invalid={!!error}
       {...props}

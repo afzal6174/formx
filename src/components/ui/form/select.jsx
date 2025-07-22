@@ -10,18 +10,17 @@ import { useFieldContext, useFormContext } from ".";
 
 function Select({ defaultValue, ...props }) {
   const {
-    name,
+    name: fieldName,
     error,
-    fieldId,
-    fieldDescriptionId,
-    fieldMessageId,
     validateField,
     clearFieldError,
   } = useFieldContext();
-  const { success, formId } = useFormContext();
+  const { name: formName, success } = useFormContext();
 
-  const STORAGE_KEY = `draft-${formId}-${name}-${fieldId}`; // userid can be added if needed
-  const [value, setValue] = React.useState("");
+  const STORAGE_KEY = `draft-${formName}-${fieldName}`; // userid can be added if needed
+
+  const initialValue = defaultValue || "";
+  const [value, setValue] = React.useState(initialValue);
 
   React.useEffect(() => {
     if (success) return;
@@ -30,13 +29,13 @@ function Select({ defaultValue, ...props }) {
       if (!stored) return;
       setValue(stored);
     });
-  }, [STORAGE_KEY, success]);
+  }, []);
 
   React.useEffect(() => {
     if (success) {
       React.startTransition(async () => {
         await clearLocal(STORAGE_KEY);
-        setValue("");
+        setValue(initialValue);
       });
     }
   }, [success]);
@@ -49,12 +48,11 @@ function Select({ defaultValue, ...props }) {
 
   return (
     <>
-      <input hidden name={name} value={value} readOnly />
+      <input hidden name={fieldName} value={value} readOnly />
 
       <SelectPrimitive.Root
         data-slot="select"
-        id={fieldId}
-        defaultValue={defaultValue}
+        id={`${formName}-${fieldName}`}
         value={value}
         onValueChange={handleChange}
         onOpenChange={(open) => {
@@ -64,8 +62,8 @@ function Select({ defaultValue, ...props }) {
         }}
         aria-describedby={
           !error
-            ? `${fieldDescriptionId}`
-            : `${fieldDescriptionId} ${fieldMessageId}`
+            ? `${fieldName}-description`
+            : `${fieldName}-description ${fieldName}-error`
         }
         aria-invalid={!!error}
         {...props}

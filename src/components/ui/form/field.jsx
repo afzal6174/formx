@@ -8,7 +8,13 @@ import { useFormContext } from "./form";
 const FieldContext = React.createContext(null);
 
 const Field = ({ name, validation: fieldValidation, className, ...props }) => {
-  const id = React.useId();
+  if (!name) {
+    throw new Error("name must be provided for <Field>");
+  }
+  if (typeof name !== "string") {
+    throw new Error("name must be a string for <Field>");
+  }
+
   const { errors, dispatch, validation: formValidation } = useFormContext();
 
   const error = errors?.[name]?.[0];
@@ -39,15 +45,15 @@ const Field = ({ name, validation: fieldValidation, className, ...props }) => {
       value={{
         name,
         error,
-        fieldId: `field-${id}`,
-        fieldDescriptionId: `field-${id}-description`,
-        fieldMessageId: `field-${id}-message`,
         validateField,
         clearFieldError,
       }}
     >
       <div
+        name={name}
         data-slot="form-field"
+        aria-labelledby={`${name}-label`}
+        aria-describedby={`${name}-description`}
         className={cn("grid gap-2", className)}
         {...props}
       />
@@ -66,35 +72,40 @@ const useFieldContext = () => {
 };
 
 function FieldLabel({ className, ...props }) {
-  const { error, fieldId } = useFieldContext();
+  const { name: fieldName, error } = useFieldContext();
+  const { name: formName } = useFormContext();
   return (
     <LabelPrimitive.Root
+      id={`${formName}-${fieldName}-label`}
+      htmlFor={`${formName}-${fieldName}`}
       data-slot="label"
       data-error={!!error}
       className={cn(
         "data-[error=true]:text-destructive flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
         className
       )}
-      htmlFor={fieldId}
       {...props}
     />
   );
 }
 
 function FieldDescription({ className, ...props }) {
-  const { fieldDescriptionId } = useFieldContext();
+  const { name: fieldName } = useFieldContext();
+  const { name: formName } = useFormContext();
   return (
     <p
       data-slot="form-description"
-      id={fieldDescriptionId}
+      id={`${formName}-${fieldName}-description`}
       className={cn("text-muted-foreground text-sm", className)}
       {...props}
     />
   );
 }
 
-function FieldMessage({ className, ...props }) {
-  const { error, fieldMessageId } = useFieldContext();
+function FieldError({ className, ...props }) {
+  const { name: fieldName, error } = useFieldContext();
+  const { name: formName } = useFormContext();
+
   const body = props.children ?? (error && String(error));
 
   if (!body) {
@@ -103,8 +114,8 @@ function FieldMessage({ className, ...props }) {
 
   return (
     <p
-      data-slot="form-message"
-      id={fieldMessageId}
+      data-slot="field-error"
+      id={`${formName}-${fieldName}-error`}
       className={cn("text-destructive text-sm", className)}
       role="alert"
       aria-live="polite"
@@ -116,4 +127,4 @@ function FieldMessage({ className, ...props }) {
   );
 }
 
-export { Field, FieldDescription, FieldLabel, FieldMessage, useFieldContext };
+export { Field, FieldDescription, FieldError, FieldLabel, useFieldContext };
