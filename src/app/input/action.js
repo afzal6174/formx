@@ -4,7 +4,7 @@ import { loginSchema } from "./validationSchema";
 
 export async function loginAction(_prevState, formData) {
   const values = Object.fromEntries(formData);
-  console.log("Login values:", values);
+  console.log("Form data:", values);
 
   const validated = loginSchema.safeParse(values);
 
@@ -19,5 +19,6 @@ export async function loginAction(_prevState, formData) {
   }
 
   // Success
+  console.log("Validated data:", validated.data);
   return { success: true, message: "Login successful!" };
 }

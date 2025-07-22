@@ -16,19 +16,19 @@ function RepoLinkCard() {
         <div className="flex gap-2 justify-center">
           <Avatar>
             <AvatarImage src="https://github.com/react.png" />
-            <AvatarFallback>REACT</AvatarFallback>
+            <AvatarFallback>R</AvatarFallback>
           </Avatar>
           <Avatar>
             <AvatarImage src="https://github.com/nextjs-bot.png" />
-            <AvatarFallback>NEXT</AvatarFallback>
+            <AvatarFallback>N</AvatarFallback>
           </Avatar>
           <Avatar>
             <AvatarImage src="https://github.com/shadcn-ui.png" />
-            <AvatarFallback>SHADCN</AvatarFallback>
+            <AvatarFallback>S</AvatarFallback>
           </Avatar>
           <Avatar>
             <AvatarImage src="https://github.com/tailwindlabs.png" />
-            <AvatarFallback>TW</AvatarFallback>
+            <AvatarFallback>T</AvatarFallback>
           </Avatar>
         </div>
       </CardHeader>

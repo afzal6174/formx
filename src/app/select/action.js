@@ -4,22 +4,21 @@ import { countrySchema } from "./validationSchema";
 
 export async function selectionAction(_prevState, formData) {
   const values = Object.fromEntries(formData);
-  console.log("country values:", values); // got "country values: { country: 'us' }" when value is "" in select.jsx
+  console.log("Form data:", values);
 
   const validated = countrySchema.safeParse(values);
-  console.log("country validation: ", validated);
 
   if (!validated.success) {
     const errors = validated.error.flatten().fieldErrors;
-    console.log("country error: ", errors);
 
     return {
       success: false,
       errors,
-      message: "Failed! Please provide valid email and password.",
+      message: "Failed! Please provide valid country.",
     };
   }
 
   // Success
-  return { success: true, message: "Login successful!" };
+  console.log("Validated data:", validated.data);
+  return { success: true, message: "Send country successfully!" };
 }

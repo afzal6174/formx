@@ -22,7 +22,6 @@ function Select({ defaultValue, ...props }) {
 
   const STORAGE_KEY = `draft-${formId}-${name}-${fieldId}`; // userid can be added if needed
   const [value, setValue] = React.useState("");
-  console.log("select value: ", value);
 
   React.useEffect(() => {
     if (success) return;
@@ -40,33 +39,38 @@ function Select({ defaultValue, ...props }) {
         setValue("");
       });
     }
-  }, [success, STORAGE_KEY]);
+  }, [success]);
 
   const handleChange = async (newValue) => {
     setValue(newValue);
     await saveLocal(newValue, STORAGE_KEY);
     clearFieldError();
   };
+
   return (
-    <SelectPrimitive.Root
-      data-slot="select"
-      id={fieldId}
-      name={name}
-      defaultValue={defaultValue}
-      onValueChange={handleChange}
-      onOpenChange={(open) => {
-        if (!open) {
-          validateField(value);
+    <>
+      <input hidden name={name} value={value} readOnly />
+
+      <SelectPrimitive.Root
+        data-slot="select"
+        id={fieldId}
+        defaultValue={defaultValue}
+        value={value}
+        onValueChange={handleChange}
+        onOpenChange={(open) => {
+          if (!open) {
+            validateField(value);
+          }
+        }}
+        aria-describedby={
+          !error
+            ? `${fieldDescriptionId}`
+            : `${fieldDescriptionId} ${fieldMessageId}`
         }
-      }}
-      aria-describedby={
-        !error
-          ? `${fieldDescriptionId}`
-          : `${fieldDescriptionId} ${fieldMessageId}`
-      }
-      aria-invalid={!!error}
-      {...props}
-    />
+        aria-invalid={!!error}
+        {...props}
+      />
+    </>
   );
 }
 
