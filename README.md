@@ -85,7 +85,7 @@ src/
 
     ```bash
     npx shadcn@latest init
-    npm install zod localforage
+    npm install zod localforage @radix-ui/react-label
     ```
 
     b. Configure component aliases in `components.json`:
@@ -119,6 +119,7 @@ src/
       - `hooks/useFormAction.js` → your `lib/hooks/`
       - `utils/localStorage.js` → your `lib/utils/`
       - `utils/cn.js` → your `lib/utils/`
+    - Delete your `lib/utils.js`, if needed.
 
     e. Create form components index:
 
