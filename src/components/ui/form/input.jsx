@@ -3,8 +3,7 @@
 import { cn } from "@/lib/utils/cn";
 import { clearLocal, getLocal, saveLocal } from "@/lib/utils/localStorage";
 import * as React from "react";
-import { useFormContext } from ".";
-import { useFieldContext } from "./field";
+import { useFieldContext, useFormContext } from ".";
 
 function Input({
   className,

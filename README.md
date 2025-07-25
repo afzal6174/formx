@@ -156,6 +156,13 @@ src/
       - Server action
       - Validation schema
 
+    c. After integration, verify your setup:
+
+    - Components are properly exported from index files
+    - All required dependencies are installed
+    - File paths in your imports are correct
+    - Example implementations work as expected
+
 3.  **Select Component Integration**
 
     a. Install select component dependency:
@@ -190,9 +197,56 @@ src/
       - Server action
       - Validation schema
 
-4.  **Verification**
+    d. After integration, verify your setup:
 
-    After integration, verify your setup:
+    - Components are properly exported from index files
+    - All required dependencies are installed
+    - File paths in your imports are correct
+    - Example implementations work as expected
+
+4.  **DatePicker Component Integration**
+
+    a. Install component dependency:
+
+    ```bash
+    npx shadcn@latest add calendar popover drawer
+    npm install chrono-node little-date
+    ```
+
+    b. Copy the files:
+
+    - From template's `lib/utils`:
+      - `utils/date-parser.ts` → your `lib/utils/`
+      - `utils/date-formatter.ts` → your `lib/utils/`
+
+    c. Add the DatePicker component:
+
+    - Copy `date-picker.jsx` from template's `components/ui/form/` to your form components directory
+    - Update your form components index:
+      ```javascript
+      // src/components/ui/form/index.js
+      export * from "./field";
+      export * from "./form";
+      export * from "./input"; // If you already add
+      export * from "./select"; // If you already add
+      export * from "./date-picker"; // Add this line
+      ```
+
+    d. Add example implementation:
+
+    - Install required dependencies (if not already installed).
+
+    ```bash
+    npx shadcn@latest add button card
+    ```
+
+    - Copy the entire `date-picker` directory from template's `src/app/` to your app directory.
+    - This includes:
+      - Select component implementation
+      - Server action
+      - Validation schema
+
+    e. After integration, verify your setup:
 
     - Components are properly exported from index files
     - All required dependencies are installed
@@ -204,6 +258,7 @@ src/
 - **[Next.js 15](https://nextjs.org/)** - React framework with app router
 - **[React 19](https://react.dev/)** - UI library with latest features
 - **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[React DayPicker](https://daypicker.dev/)** - DayPicker is a React component for creating date pickers, calendars, and date inputs for web applications
 - **[Radix UI](https://www.radix-ui.com/)** - Accessible component primitives
 - **[Zod](https://zod.dev/)** - TypeScript-first schema validation
 - **[Lucide React](https://lucide.dev/)** - Beautiful icon library
