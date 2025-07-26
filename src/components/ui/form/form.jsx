@@ -9,22 +9,39 @@ const Form = ({
   name,
   action,
   state,
+  reset = false,
   dispatch,
   validation,
   className,
   ...props
 }) => {
-  if (!name) {
-    throw new Error("name must be provided for <Form>");
+  if (!name || typeof name !== "string") {
+    throw new Error("A string name must be provided for <Form>");
   }
-  if (typeof name !== "string") {
-    throw new Error("name must be a string for <Form>");
-  }
+
   const contextValue = {
     name,
     ...state,
+    reset,
     dispatch,
     validation,
+  };
+
+  const handleSubmit = (event) => {
+    if (!validation) return;
+
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+    const validated = validation.safeParse(data);
+    if (validated.success) {
+      dispatch({ type: "CLEAR_ERROR", payload: name });
+    } else {
+      event.preventDefault();
+      dispatch({
+        type: "SET_ERROR",
+        payload: validated.error.flatten().fieldErrors,
+      });
+    }
   };
 
   return (
@@ -33,6 +50,7 @@ const Form = ({
         data-slot="form"
         name={name}
         action={action}
+        onSubmit={handleSubmit}
         aria-labelledby={`${name}-title`}
         aria-describedby={`${name}-description`}
         className={cn("flex flex-col gap-6", className)}
@@ -46,10 +64,17 @@ const Form = ({
 
 const useFormContext = () => {
   const context = React.useContext(FormContext);
-  if (!context) {
-    throw new Error("useForm must be used inside <Form>");
-  }
-  return context;
+  return (
+    context || {
+      name: "",
+      success: false,
+      isPending: false,
+      hasErrors: false,
+      serverMessage: null,
+      dispatch: () => {},
+      validation: null,
+    }
+  );
 };
 
 function FormTitle({ className, ...props }) {
@@ -81,7 +106,7 @@ function FormDescription({ className, ...props }) {
 }
 
 function FormMessage({ className, ...props }) {
-  const { name, hasErrors, serverMessage } = useFormContext();
+  const { name, success, serverMessage } = useFormContext();
   const body = props.children ?? (serverMessage && String(serverMessage));
 
   if (!body) {
@@ -91,7 +116,7 @@ function FormMessage({ className, ...props }) {
   return (
     <p
       data-slot="form-message"
-      data-error={hasErrors}
+      data-error={!success}
       id={`${name}-message`}
       className={cn(
         "text-sm data-[error=true]:text-destructive ",

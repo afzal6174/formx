@@ -18,14 +18,14 @@ import {
   FormTitle,
   Input,
 } from "@/components/ui/form";
-import useFormAction from "@/lib/hooks/useFormAction";
+import useFormAction from "@/lib/hooks/use-form-action";
 
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { loginAction } from "./action";
-import { loginSchema } from "./validationSchema";
+import { loginSchema } from "./validation-schema";
 
 export default function LoginForm() {
   const [states, dispatch, formAction] = useFormAction(loginAction);
@@ -97,7 +97,7 @@ export default function LoginForm() {
               </Field>
             </div>
           </CardContent>
-          <CardFooter className="flex-col gap-2">
+          <CardFooter className="flex-col items-start gap-2">
             <Button
               type="submit"
               disabled={states.isPending || states.hasErrors}

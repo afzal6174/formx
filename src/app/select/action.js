@@ -1,12 +1,11 @@
 "use server";
 
-import { countrySchema } from "./validationSchema";
+import { countrySchema } from "./validation-schema";
 
 export async function selectionAction(_prevState, formData) {
-  const values = Object.fromEntries(formData);
-  console.log("Form data:", values);
+  const data = Object.fromEntries(formData);
 
-  const validated = countrySchema.safeParse(values);
+  const validated = countrySchema.safeParse(data);
 
   if (!validated.success) {
     const errors = validated.error.flatten().fieldErrors;

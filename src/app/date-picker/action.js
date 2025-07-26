@@ -3,11 +3,9 @@
 import { dateTimeSchema } from "./validation-schema";
 
 export async function dateTimeAction(_prevState, formData) {
-  const values = Object.fromEntries(formData);
-  console.log("Form data:", values);
+  const data = Object.fromEntries(formData);
 
-  const validated = dateTimeSchema.safeParse(values);
-  console.log("Validation result:", validated);
+  const validated = dateTimeSchema.safeParse(data);
 
   if (!validated.success) {
     const errors = validated.error.flatten().fieldErrors;

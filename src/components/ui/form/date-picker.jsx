@@ -23,14 +23,16 @@ import { useIsMobile } from "@/lib/hooks/use-mobile";
 import { cn } from "@/lib/utils/cn";
 import { dateFormatter } from "@/lib/utils/date-formatter";
 import { dateParser } from "@/lib/utils/date-parser";
-import { clearLocal, getLocal, saveLocal } from "@/lib/utils/localStorage";
+import { clearLocal, getLocal, saveLocal } from "@/lib/utils/local-storage";
 import { useFieldContext, useFormContext } from ".";
 
 export function DatePicker({
   name: tagName,
+  reset: resetTag = false,
   placeholder,
   defaultValue,
   defaultMonth,
+  numberOfMonths: popoverNumberOfMonths = 1,
   mode = "single",
   className,
   ...props
@@ -47,13 +49,15 @@ export function DatePicker({
 
   const {
     name: fieldContextName,
+    reset: resetField,
     error,
     validateField,
     clearFieldError,
   } = useFieldContext();
   const fieldName = fieldContextName || tagName || "date-picker";
-  const { name: formContextName, success } = useFormContext();
+  const { name: formContextName, success, reset: resetForm } = useFormContext();
   const formName = formContextName || "dp-form";
+  const reset = resetForm || resetField || resetTag;
 
   const STORAGE_KEY = `draft-${formName}-${fieldName}`; // userid can be added if needed
 
@@ -69,13 +73,13 @@ export function DatePicker({
   }, []);
 
   React.useEffect(() => {
-    if (success) {
+    if (success || reset) {
       React.startTransition(async () => {
         await clearLocal(STORAGE_KEY);
         setDate(initialValue);
       });
     }
-  }, [success]);
+  }, [success, reset]);
 
   React.useEffect(() => {
     if (openMobile) {
@@ -134,7 +138,7 @@ export function DatePicker({
         </DrawerTrigger>
         <DrawerContent className="w-auto overflow-hidden p-0">
           <DrawerHeader className="sr-only">
-            <DrawerTitle>{placeholder || "Select date"}</DrawerTitle>
+            <DrawerTitle>Select date</DrawerTitle>
             <DrawerDescription>Set your date</DrawerDescription>
           </DrawerHeader>
           <div className="mt-4 border-t">
@@ -142,6 +146,7 @@ export function DatePicker({
               mode={mode}
               selected={date}
               month={month}
+              numberOfMonths={1}
               onMonthChange={setMonth}
               onSelect={handleSelect}
               className={cn(
@@ -208,10 +213,11 @@ export function DatePicker({
           name={fieldName}
           selected={date}
           month={month}
+          numberOfMonths={popoverNumberOfMonths}
           onMonthChange={setMonth}
           onSelect={handleSelect}
           className={cn(
-            "rounded-lg border md:[--cell-size:--spacing(9)] 2xl:[--cell-size:--spacing(10)]",
+            "rounded-lg border md:[--cell-size:--spacing(7)] 2xl:[--cell-size:--spacing(9)]",
             className
           )}
           {...props}

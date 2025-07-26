@@ -17,7 +17,7 @@ import {
   FormMessage,
   FormTitle,
 } from "@/components/ui/form";
-import useFormAction from "@/lib/hooks/useFormAction";
+import useFormAction from "@/lib/hooks/use-form-action";
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -85,12 +85,20 @@ export default function LoginForm() {
                   min={1}
                   max={30}
                   startMonth={new Date()}
-                  endMonth={
-                    new Date(
-                      new Date().setFullYear(new Date().getFullYear() + 1)
-                    )
-                  }
-                  disabled={bookedDates}
+                  // endMonth={
+                  //   new Date(
+                  //     new Date().setFullYear(new Date().getFullYear() + 1)
+                  //   )
+                  // } // don't use this as it will break the date picker
+                  disabled={[
+                    bookedDates,
+                    {
+                      before: new Date(),
+                      after: new Date(
+                        new Date().setFullYear(new Date().getFullYear() + 1)
+                      ),
+                    },
+                  ]}
                   modifiers={{
                     booked: bookedDates,
                   }}
@@ -107,22 +115,31 @@ export default function LoginForm() {
                 <DatePicker
                   mode="multiple"
                   placeholder="Select your booking date"
-                  numberOfMonths={2}
                   max={5}
-                  disabled={{ dayOfWeek: [5, 6] }}
-                  disableNavigation
+                  startMonth={new Date()}
+                  disabled={[
+                    { dayOfWeek: [5, 6] },
+                    {
+                      before: new Date(),
+                      after: new Date(
+                        new Date().setMonth(new Date().getMonth() + 1)
+                      ),
+                    },
+                  ]}
+
+                  // disableNavigation
                 />
                 <FieldError />
               </Field>
             </div>
           </CardContent>
-          <CardFooter className="flex-col gap-2">
+          <CardFooter className="flex-col items-start gap-2">
             <Button
               type="submit"
               disabled={states.isPending || states.hasErrors}
               className="w-full"
             >
-              {states.isPending ? "Sending..." : "Send"}
+              {states.isPending ? "Booking..." : "Book"}
             </Button>
 
             <FormMessage />

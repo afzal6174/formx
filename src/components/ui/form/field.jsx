@@ -7,12 +7,15 @@ import { useFormContext } from "./form";
 
 const FieldContext = React.createContext(null);
 
-const Field = ({ name, validation: fieldValidation, className, ...props }) => {
-  if (!name) {
-    throw new Error("name must be provided for <Field>");
-  }
-  if (typeof name !== "string") {
-    throw new Error("name must be a string for <Field>");
+const Field = ({
+  name,
+  validation: fieldValidation,
+  reset = false,
+  className,
+  ...props
+}) => {
+  if (!name || typeof name !== "string") {
+    throw new Error("A string name must be provided for <Field>");
   }
 
   const { errors, dispatch, validation: formValidation } = useFormContext();
@@ -24,14 +27,14 @@ const Field = ({ name, validation: fieldValidation, className, ...props }) => {
 
   const validateField = (fieldValue) => {
     if (!validationRule) return;
-    const result = validationRule.safeParse({ [name]: fieldValue });
+    const validated = validationRule.safeParse({ [name]: fieldValue });
 
-    if (result.success) {
+    if (validated.success) {
       dispatch({ type: "CLEAR_ERROR", payload: name });
     } else {
       dispatch({
         type: "SET_ERROR",
-        payload: result.error.flatten().fieldErrors,
+        payload: validated.error.flatten().fieldErrors,
       });
     }
   };
@@ -64,11 +67,14 @@ const Field = ({ name, validation: fieldValidation, className, ...props }) => {
 const useFieldContext = () => {
   const fieldContext = React.useContext(FieldContext);
 
-  if (!fieldContext) {
-    throw new Error("useFieldContext should be used within <Field>");
-  }
-
-  return fieldContext;
+  return (
+    fieldContext || {
+      name: null,
+      error: null,
+      validateField: () => {},
+      clearFieldError: () => {},
+    }
+  );
 };
 
 function FieldLabel({ className, ...props }) {

@@ -1,24 +1,29 @@
 "use client";
 
 import { cn } from "@/lib/utils/cn";
-import { clearLocal, getLocal, saveLocal } from "@/lib/utils/localStorage";
+import { clearLocal, getLocal, saveLocal } from "@/lib/utils/local-storage";
 import * as React from "react";
 import { useFieldContext, useFormContext } from ".";
 
 function Input({
+  name: tagName,
+  reset: resetTag = false,
   className,
   type = "text",
   defaultValue,
-  validation,
   ...props
 }) {
   const {
-    name: fieldName,
+    name: fieldContextName,
+    reset: resetField,
     error,
     validateField,
     clearFieldError,
   } = useFieldContext();
-  const { name: formName, success } = useFormContext();
+  const fieldName = fieldContextName || tagName || "input-field";
+  const { name: formContextName, success, reset: resetForm } = useFormContext();
+  const formName = formContextName || "input-form";
+  const reset = resetForm || resetField || resetTag;
 
   const STORAGE_KEY = `draft-${formName}-${fieldName}`; // userid can be added if needed
 
@@ -35,13 +40,13 @@ function Input({
   }, []);
 
   React.useEffect(() => {
-    if (success) {
+    if (success || reset) {
       React.startTransition(async () => {
         await clearLocal(STORAGE_KEY);
         setValue(initialValue);
       });
     }
-  }, [success]);
+  }, [success, reset]);
 
   const handleChange = async (e) => {
     const newValue = e.target.value;
@@ -59,6 +64,7 @@ function Input({
       value={value}
       onChange={handleChange}
       onBlur={(e) => validateField(e.target.value)}
+      autoComplete="on"
       className={cn(
         "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",

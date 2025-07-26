@@ -4,18 +4,31 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
-import { clearLocal, getLocal, saveLocal } from "@/lib/utils/localStorage";
+import { clearLocal, getLocal, saveLocal } from "@/lib/utils/local-storage";
 import * as React from "react";
 import { useFieldContext, useFormContext } from ".";
 
-function Select({ defaultValue, ...props }) {
+const IdContext = React.createContext(null);
+
+function Select({
+  name: tagName,
+  reset: resetTag = false,
+  defaultValue,
+  ...props
+}) {
   const {
-    name: fieldName,
+    name: fieldContextName,
+    reset: resetField,
     error,
     validateField,
     clearFieldError,
   } = useFieldContext();
-  const { name: formName, success } = useFormContext();
+  const fieldName = fieldContextName || tagName || "select-field";
+  const { name: formContextName, success, reset: resetForm } = useFormContext();
+  const formName = formContextName || "select-form";
+  const reset = resetForm || resetField || resetTag;
+
+  const id = `${formName}-${fieldName}`;
 
   const STORAGE_KEY = `draft-${formName}-${fieldName}`; // userid can be added if needed
 
@@ -32,13 +45,13 @@ function Select({ defaultValue, ...props }) {
   }, []);
 
   React.useEffect(() => {
-    if (success) {
+    if (success || reset) {
       React.startTransition(async () => {
         await clearLocal(STORAGE_KEY);
         setValue(initialValue);
       });
     }
-  }, [success]);
+  }, [success, reset]);
 
   const handleChange = async (newValue) => {
     setValue(newValue);
@@ -47,12 +60,18 @@ function Select({ defaultValue, ...props }) {
   };
 
   return (
-    <>
-      <input hidden name={fieldName} value={value} readOnly />
+    <IdContext.Provider value={{ id }}>
+      <input
+        hidden
+        name={fieldName}
+        value={value}
+        autoComplete="on"
+        aria-hidden="true"
+        readOnly
+      />
 
       <SelectPrimitive.Root
         data-slot="select"
-        id={`${formName}-${fieldName}`}
         value={value}
         onValueChange={handleChange}
         onOpenChange={(open) => {
@@ -68,7 +87,7 @@ function Select({ defaultValue, ...props }) {
         aria-invalid={!!error}
         {...props}
       />
-    </>
+    </IdContext.Provider>
   );
 }
 
@@ -81,8 +100,11 @@ function SelectValue({ ...props }) {
 }
 
 function SelectTrigger({ className, size = "default", children, ...props }) {
+  const { id } = React.useContext(IdContext);
+
   return (
     <SelectPrimitive.Trigger
+      id={id}
       data-slot="select-trigger"
       data-size={size}
       className={cn(
