@@ -41,7 +41,7 @@ export default function LoginForm() {
   );
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center h-full max-container">
       <Card className="w-full max-w-sm">
         <Form
           name="date-picker"

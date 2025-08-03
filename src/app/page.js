@@ -3,15 +3,15 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center h-full max-container">
       <RepoLinkCard />
-    </main>
+    </div>
   );
 }
 
 function RepoLinkCard() {
   return (
-    <Card className="w-lg">
+    <Card className="max-w-lg">
       <CardHeader>
         <div className="flex gap-2 justify-center">
           <Avatar>

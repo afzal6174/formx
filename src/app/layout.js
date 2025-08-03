@@ -27,7 +27,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} w-full antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          <div className="[--header-height:calc(--spacing(14))]">
+          <div className="min-h-screen w-full [--header-height:calc(--spacing(14))]">
             <SidebarProvider
               defaultOpen={defaultOpen}
               className="flex flex-col"

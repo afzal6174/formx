@@ -41,7 +41,7 @@ export default function LoginForm() {
   }, [states.success]);
 
   return (
-    <main className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center h-full max-container">
       <Card className="w-full max-w-sm">
         <Form
           name="login"
@@ -112,6 +112,6 @@ export default function LoginForm() {
           </CardFooter>
         </Form>
       </Card>
-    </main>
+    </div>
   );
 }
