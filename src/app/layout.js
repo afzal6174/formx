@@ -1,9 +1,7 @@
-import FormSidebar from "@/components/nav/form-sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SiteHeader } from "@/components/header";
+import FormSidebar from "@/components/nav/sidebar";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Geist, Geist_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
@@ -27,18 +25,32 @@ export default async function RootLayout({ children }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning
       >
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <nav>
-            <FormSidebar />
-          </nav>
-          <SidebarTrigger className="-ml-1" />
-          <SidebarInset>{children}</SidebarInset>
-        </SidebarProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="[--header-height:calc(--spacing(14))]">
+            <SidebarProvider
+              defaultOpen={defaultOpen}
+              className="flex flex-col"
+            >
+              <SiteHeader />
+              <div className="flex flex-1">
+                <nav>
+                  <FormSidebar />
+                </nav>
+                {/* <SidebarTrigger className="-ml-1" /> */}
+                <SidebarInset>{children}</SidebarInset>
+              </div>
+            </SidebarProvider>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
