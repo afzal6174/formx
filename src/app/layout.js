@@ -1,5 +1,5 @@
 import { SiteHeader } from "@/components/header";
-import FormSidebar from "@/components/nav/sidebar";
+import MainNav from "@/components/nav";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -42,8 +42,8 @@ export default async function RootLayout({ children }) {
             >
               <SiteHeader />
               <div className="flex flex-1">
-                <nav>
-                  <FormSidebar />
+                <nav aria-label="Main Navigation">
+                  <MainNav />
                 </nav>
                 {/* <SidebarTrigger className="-ml-1" /> */}
                 <SidebarInset>{children}</SidebarInset>
