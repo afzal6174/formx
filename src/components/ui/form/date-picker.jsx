@@ -35,6 +35,8 @@ export function DatePicker({
   numberOfMonths: popoverNumberOfMonths = 1,
   mode = "single",
   className,
+  disabled,
+  disabledDates,
   ...props
 }) {
   const isMobile = useIsMobile();
@@ -55,7 +57,12 @@ export function DatePicker({
     clearFieldError,
   } = useFieldContext();
   const fieldName = fieldContextName || tagName || "date-picker";
-  const { name: formContextName, success, reset: resetForm } = useFormContext();
+  const {
+    name: formContextName,
+    success,
+    reset: resetForm,
+    isPending,
+  } = useFormContext();
   const formName = formContextName || "dp-form";
   const reset = resetForm || resetField || resetTag;
 
@@ -93,6 +100,9 @@ export function DatePicker({
     clearFieldError();
   };
 
+  const isDisabled = disabled || isPending;
+  console.log(isDisabled);
+
   if (isMobile) {
     return (
       <Drawer
@@ -111,6 +121,7 @@ export function DatePicker({
             data-slot="date-picker"
             data-has-value={!!date}
             variant="outline"
+            disabled={isDisabled}
             aria-describedby={
               !error
                 ? `${fieldName}-description`
@@ -153,6 +164,7 @@ export function DatePicker({
                 "mx-auto [--cell-size:clamp(0px,calc(100vw/7.5),52px)]",
                 className
               )}
+              disabled={disabledDates}
               {...props}
             />
           </div>
@@ -177,6 +189,7 @@ export function DatePicker({
           data-slot="date-picker"
           data-has-value={!!date}
           variant="outline"
+          disabled={isDisabled}
           aria-describedby={
             !error
               ? `${fieldName}-description`
@@ -216,6 +229,7 @@ export function DatePicker({
           numberOfMonths={popoverNumberOfMonths}
           onMonthChange={setMonth}
           onSelect={handleSelect}
+          disabled={disabledDates}
           className={cn(
             "rounded-lg border md:[--cell-size:--spacing(7)] 2xl:[--cell-size:--spacing(9)]",
             className

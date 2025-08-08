@@ -63,7 +63,7 @@ export default function LoginForm() {
                   defaultMonth="18 years ago"
                   placeholder="Select your date of birth"
                   captionLayout="dropdown"
-                  disabled={{
+                  disabledDates={{
                     after: new Date(
                       new Date().setFullYear(new Date().getFullYear() - 18)
                     ),
@@ -90,7 +90,7 @@ export default function LoginForm() {
                   //     new Date().setFullYear(new Date().getFullYear() + 1)
                   //   )
                   // } // don't use this as it will break the date picker
-                  disabled={[
+                  disabledDates={[
                     bookedDates,
                     {
                       before: new Date(),
@@ -117,7 +117,7 @@ export default function LoginForm() {
                   placeholder="Select your booking date"
                   max={5}
                   startMonth={new Date()}
-                  disabled={[
+                  disabledDates={[
                     { dayOfWeek: [5, 6] },
                     {
                       before: new Date(),

@@ -14,6 +14,7 @@ function Select({
   name: tagName,
   reset: resetTag = false,
   defaultValue,
+  disabled,
   ...props
 }) {
   const {
@@ -24,7 +25,7 @@ function Select({
     clearFieldError,
   } = useFieldContext();
   const fieldName = fieldContextName || tagName || "select-field";
-  const { name: formContextName, success, reset: resetForm } = useFormContext();
+  const { name: formContextName, success, reset: resetForm, isPending } = useFormContext();
   const formName = formContextName || "select-form";
   const reset = resetForm || resetField || resetTag;
 
@@ -59,6 +60,8 @@ function Select({
     clearFieldError();
   };
 
+  const isDisabled = disabled || isPending;
+
   return (
     <IdContext.Provider value={{ id }}>
       <input
@@ -79,6 +82,7 @@ function Select({
             validateField(value);
           }
         }}
+        disabled={isDisabled}
         aria-describedby={
           !error
             ? `${fieldName}-description`
